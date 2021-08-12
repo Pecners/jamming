@@ -34,9 +34,12 @@ class App extends React.Component {
 
   addTrack(track) {
     if (!this.state.playlistTracks.find(savedTrack => savedTrack.id === track.id)) {
-      this.setState({
-        playlistTracks: this.state.playlistTracks.push(track)
-      });
+      this.setState(prevState => ({
+        /* push() method doesn't work to add to array because it returns the length
+        of the new array. concat() returns the whole new array.
+        This bug took me HOURS to figure out.*/
+        playlistTracks: this.state.playlistTracks.concat(track)
+      }));
     }
   }
 
@@ -47,16 +50,15 @@ class App extends React.Component {
   }
 
   render() {
-    console.log(this.state.playlistTracks);
     return (
       <div>
         <h1>Ja<span className="highlight">mmm</span>ing</h1>
         <div className="App">
           < SearchBar />
           <div className="App-playlist">
-            < SearchResults playlistTracks={this.state.searchResults} onAdd={this.addTrack}/>
+            < SearchResults trackList={this.state.searchResults} onAdd={this.addTrack}/>
             < Playlist playlistName={this.state.playlistName}
-            playlistTracks={this.state.playlistTracks}
+            trackList={this.state.playlistTracks}
             onRemove={this.removeTrack}/>
           </div>
         </div>
